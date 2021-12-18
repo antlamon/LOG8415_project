@@ -18,9 +18,9 @@ bearer_token = os.environ.get('BEARER_TOKEN')
 client = tweepy.Client(bearer_token)
 query = '#COVID19 lang:en -is:retweet'
 
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-application = app.server
-app.layout = html.Div(
+dash_app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app = dash_app.server
+dash_app.layout = html.Div(
     html.Div([
         html.H4('Twitter Live Sentiment Analysis'),
         html.Div(id='live-update-text'),
@@ -58,8 +58,8 @@ def get_sentiment(texts, input_language='en'):
     return response.json()
 
 
-@app.callback(Output('live-update-text', 'children'),
-              Input('interval-component', 'n_intervals'))
+@dash_app.callback(Output('live-update-text', 'children'),
+                   Input('interval-component', 'n_intervals'))
 def update_metrics(n):
     tweets = client.search_recent_tweets(query)
     sentiments = get_sentiment([tweet.text for tweet in tweets.data])
@@ -89,4 +89,4 @@ def update_metrics(n):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    dash_app.run_server(debug=True)
