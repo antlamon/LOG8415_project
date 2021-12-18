@@ -9,6 +9,8 @@ from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output
 
+hashtag = 'christmas'
+
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 subscription_key = os.environ.get('SUBSCRIPTION_KEY')
@@ -22,7 +24,7 @@ dash_app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app = dash_app.server
 dash_app.layout = html.Div(
     html.Div([
-        html.H4('Twitter Live Sentiment Analysis'),
+        html.H4(f'Twitter Live Sentiment Analysis on {hashtag}'),
         html.Div(id='live-update-text'),
         # dcc.Graph(id='live-update-graph'),
         dcc.Interval(
