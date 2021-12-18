@@ -16,7 +16,7 @@ endpoint = os.environ.get('ENDPOINT')
 bearer_token = os.environ.get('BEARER_TOKEN')
 
 client = tweepy.Client(bearer_token)
-query = '#COVID19 lang:en -is:retweet'
+query = '#christmas lang:en -is:retweet'
 
 dash_app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app = dash_app.server
