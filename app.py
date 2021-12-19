@@ -46,7 +46,6 @@ def get_sentiment(texts, input_language='en'):
         'X-ClientTraceId': str(uuid.uuid4())
     }
 
-    # You can pass more than one object in body.
     body = {
         'documents': [
             {
