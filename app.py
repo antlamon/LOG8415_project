@@ -9,7 +9,7 @@ from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output
 
-hashtag = 'christmas'
+hashtag = 'COVID19'
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
