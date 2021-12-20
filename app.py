@@ -18,15 +18,14 @@ endpoint = os.environ.get('ENDPOINT')
 bearer_token = os.environ.get('BEARER_TOKEN')
 
 client = tweepy.Client(bearer_token)
-query = '#christmas lang:en -is:retweet'
+query = f'#{hashtag} lang:en -is:retweet'
 
 dash_app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app = dash_app.server
 dash_app.layout = html.Div(
     html.Div([
         html.H4(f'Twitter Live Sentiment Analysis on {hashtag}'),
-        html.Div(id='live-update-text'),
-        # dcc.Graph(id='live-update-graph'),
+        html.Div(id='live-update-tweet'),
         dcc.Interval(
             id='interval-component',
             interval=10*1000,  # in milliseconds
@@ -59,13 +58,15 @@ def get_sentiment(texts, input_language='en'):
     return response.json()
 
 
-@dash_app.callback(Output('live-update-text', 'children'),
+@dash_app.callback(Output('live-update-tweet', 'children'),
                    Input('interval-component', 'n_intervals'))
 def update_metrics(n):
     tweets = client.search_recent_tweets(query)
     sentiments = get_sentiment([tweet.text for tweet in tweets.data])
+    if not len(sentiments.get('documents', [])):
+        return dash.no_update
     data = {}
-    for sentiment in sentiments.get('documents'):
+    for sentiment in sentiments.get('documents', []):
         value = sentiment.get('sentiment')
         data[value] = data.setdefault(value, 0) + 1
     data = pd.DataFrame(data.items(), columns=['sentiment', 'tweets'])
@@ -84,7 +85,7 @@ def update_metrics(n):
             html.Div(
                 [html.Span('Sentiment: ', style={'font-weight': 'bold'}), html.Span(sentiment.get('sentiment'))])
         ], style={'display': 'flex', 'flex-direction': 'column', 'padding': '5px'})
-        for tweet, sentiment in zip(tweets.data, sentiments.get('documents'))
+        for tweet, sentiment in zip(tweets.data, sentiments.get('documents', []))
     ])
     return children
 
